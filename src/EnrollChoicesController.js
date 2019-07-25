@@ -44,6 +44,14 @@ function (Okta, FormController, Enums, RouterUtil, FactorList,
 
       subtitle: function () {
         switch (this.state.get('pageType')) {
+        case Enums.HAS_REQUIRED_SOME_REQUIRED_ENROLLED:
+          const policy = this.options.appState.get('policy');
+          if (policy && policy.gracePeriod && policy.gracePeriod.endDate) {
+            let endDate = new Date(policy.gracePeriod.endDate).getTime();
+            let leftDays = Math.round((endDate - new Date().getTime()) / (1000 * 3600 * 24));
+            return Okta.loc('enroll.choices.optional.grace', 'login', [leftDays]);
+          }
+          return Okta.loc('enroll.choices.optional', 'login');
         case Enums.ALL_OPTIONAL_SOME_ENROLLED:
         case Enums.HAS_REQUIRED_ALL_REQUIRED_ENROLLED:
           return Okta.loc('enroll.choices.optional', 'login');
